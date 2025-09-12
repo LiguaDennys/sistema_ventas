@@ -1,15 +1,13 @@
-import { View, Text,Image,  TouchableOpacity, TextInput } from "react-native";
+import { View, Text,Image,  TouchableOpacity, TextInput, Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import type { StackNavigationProp } from "@react-navigation/stack";
 import { useState } from "react";
 import { useUserStore } from "../store/userStore"; // 👈 Zustand
 import Toast from "react-native-toast-message";
 import type { RootStackParamList } from "../../App";
+import { Ionicons } from "@expo/vector-icons";
 
-// type RootStackParamList = {
-//   Login: undefined;
-//   Registro: undefined;
-// };
+
 
 export default function RegistroScreen() {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
@@ -17,6 +15,9 @@ export default function RegistroScreen() {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [userFocused, setUserFocused] = useState(false);
+  const [passFocused, setPassFocused] = useState(false);
+  const [passwordVisible, setPasswordVisible] = useState(false);
 
   const handleRegistrarse = async () => {
     if(!username || !password){
@@ -77,24 +78,39 @@ export default function RegistroScreen() {
         <Text className="mb-6 text-3xl font-bold text-center text-gray-800">
           Registro
         </Text>
+        
+        <View className={`flex-row items-center bg-gray-50 border ${userFocused ? 'border-blue-600' : 'border-gray-300'} rounded-xl  p-2 mb-4`}>
+          <Ionicons name="person-outline" size={24} className= "mr-4 text-gray-400"/>
+          <TextInput
+            placeholder="Ingrese su nombre"
+            className="flex-1 text-base "
+            value={username}
+            onChangeText={setUsername}
+            onFocus={() => setUserFocused(true)}
+            onBlur={() => setUserFocused(false)}
+          />
+          
+        </View>
 
-        <Text className="mb-2 text-xl text-gray-800">Usuario</Text>
-        <TextInput
-          placeholder="Ingrese su nombre"
-          className="p-4 mb-4 bg-gray-100 border border-gray-300 rounded-xl"
-          value={username}
-          onChangeText={setUsername}
-        />
+      
 
-        <Text className="mb-2 text-xl text-gray-800">Contraseña</Text>
-        <TextInput
-          placeholder="Ingrese su contraseña"
-          secureTextEntry
-          className="p-4 mb-6 bg-gray-100 border border-gray-300 rounded-xl"
-          value={password}
-          onChangeText={setPassword}
-        />
+        <View className={`flex-row items-center bg-gray-50 border ${passFocused ? 'border-blue-600' : 'border-gray-300'} rounded-xl  p-2 mb-4`}>
+          <Ionicons name="lock-closed-outline" size={24} className= "mr-4 text-gray-400"/>
+          <TextInput
+            placeholder="Ingrese su contraseña"
+            className="flex-1 text-base "
+            value={password}
+            onChangeText={setPassword}
+            onFocus={() => setPassFocused(true)}
+            onBlur={() => setPassFocused(false)}
+            secureTextEntry={!passwordVisible}
+          />
+          <Pressable onPress={() => setPasswordVisible(!passwordVisible)}>
+            <Ionicons name={passwordVisible ? "eye-off-outline" : "eye-outline"} size={24} className="text-gray-400" />
+          </Pressable>
+        </View>
 
+        
         <TouchableOpacity
           className="p-4 bg-green-600 rounded-xl active:bg-green-700"
           onPress={handleRegistrarse}
@@ -118,38 +134,5 @@ export default function RegistroScreen() {
       </View>
     </View>
   );
-  // return (
-  //   <View className="justify-center flex-1 px-6 bg-white">
-  //     <Text className="mb-8 text-3xl font-bold text-center text-gray-800">
-  //       Registro
-  //     </Text>
-
-  //     <View className="mb-4">
-  //       <Text className="mb-2 text-xl text-gray-800">Usuario:</Text>
-  //       <TextInput
-  //         placeholder="Ingrese su nombre"
-  //         className="p-3 border border-gray-300 rounded-md"
-  //         value={username}
-  //         onChangeText={setUsername}
-  //       />
-  //     </View>
-
-  //     <View className="mb-6">
-  //       <Text className="mb-2 text-xl text-gray-800">Password:</Text>
-  //       <TextInput
-  //         placeholder="Ingrese su contraseña"
-  //         secureTextEntry
-  //         className="p-3 border border-gray-300 rounded-md"
-  //         value={password}
-  //         onChangeText={setPassword}
-  //       />
-  //     </View>
-
-  //     <TouchableOpacity className="p-4 bg-green-600 rounded-md" onPress={handleRegistrarse} >
-  //       <Text className="text-lg font-semibold text-center text-white">
-  //         Registrarse
-  //       </Text>
-  //     </TouchableOpacity>
-  //   </View>
-  // );
+ 
 }

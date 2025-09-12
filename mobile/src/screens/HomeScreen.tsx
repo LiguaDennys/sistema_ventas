@@ -5,19 +5,30 @@ import { useUserStore } from "../store/userStore";
 import type { StackNavigationProp } from "@react-navigation/stack";
 import { useNavigation } from "@react-navigation/native";
 import type { RootStackParamList } from "../../App";
+import Loading from "../components/loading"
+import { useState } from "react";
+
 
 export default function HomeScreen() {
   const user = useUserStore((state) => state.user);
   const logout = useUserStore((state) => state.logout);
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
+
+  const [loading, setLoading] = useState(false);
+
   const handleLogout = () => {
-    logout(); // limpia usuario en Zustand
-    navigation.navigate("Login"); // vuelve a Login
+    setLoading(true);
+    setTimeout(() => {
+      logout(); // limpia usuario en Zustand
+      setLoading(false);
+      navigation.navigate("Login"); // vuelve a Login
+    }, 1500);
   };
 
   return (
     <View className="justify-center flex-1 px-6 bg-gray-100">
+       {loading && <Loading text="Cerrando sesión..." />}
       {/* Card central */}
       <View className="items-center p-6 bg-white shadow-md rounded-2xl">
         <Text className="mb-4 text-3xl font-bold text-center text-gray-800">
